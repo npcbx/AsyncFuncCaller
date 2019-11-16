@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -10,7 +10,6 @@ public class AsyncFuncCaller : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-				"AsyncFuncCaller/Public"
 				// ... add public include paths required here ...
 			}
 			);
@@ -18,7 +17,6 @@ public class AsyncFuncCaller : ModuleRules
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				"AsyncFuncCaller/Private",
 				// ... add other private include paths required here ...
 			}
 			);
@@ -38,8 +36,8 @@ public class AsyncFuncCaller : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				//"Slate",
-				//"SlateCore",
+				"Slate",
+				"SlateCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
