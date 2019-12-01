@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Runnable.h"
 #include "Async.h"
 
 DECLARE_DELEGATE_TwoParams(FuncCallFinishDelegate, UObject*, bool);
