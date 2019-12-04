@@ -6,8 +6,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Async.h"
-
 DECLARE_DELEGATE_TwoParams(FuncCallFinishDelegate, UObject*, bool);
 
 class ASYNCFUNCCALLER_API FFuncCallerThreadWorker : public FRunnable
