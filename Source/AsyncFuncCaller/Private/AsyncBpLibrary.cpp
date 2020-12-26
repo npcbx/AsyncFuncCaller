@@ -8,9 +8,9 @@
 #include<functional>
 #include<Async/Async.h>
 
-#include "AllowWindowsPlatformTypes.h"
+#include "Windows/AllowWindowsPlatformTypes.h"
 #include "windows.h"
-#include "HideWindowsPlatformTypes.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 
 
 void URunnableThreadCaller::PauseThread() 
