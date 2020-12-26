@@ -21,7 +21,7 @@ class ASYNCFUNCCALLER_API UFuncCaller : public UBlueprintAsyncActionBase
 public:
 	
 	UFUNCTION(BLueprintCallable, Category = "如果爱|FileUtility", meta = (BlueprintInternalUseOnly = "true"))
-	static UFuncCaller* StartAsyncFunc(FString FuncName, UObject* Target);
+	static UFuncCaller* StartAsyncFuncByFuncName(FString FuncName, UObject* Target);
 
 	UPROPERTY(BlueprintAssignable)
 	FFuncCallSuccessDelegate OnComplete;
