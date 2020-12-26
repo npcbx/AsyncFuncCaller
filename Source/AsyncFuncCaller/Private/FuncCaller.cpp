@@ -4,7 +4,7 @@
 #include "FuncCaller.h"
 #include "FuncCallerWorker.h"
 
-UFuncCaller* UFuncCaller::StartAsyncFunc(FString FuncName, UObject* Target) {
+UFuncCaller* UFuncCaller::StartAsyncFuncByFuncName(FString FuncName, UObject* Target) {
 	UFuncCaller * loader = NewObject<UFuncCaller>();
 
 	FString ThreadName = FString::Printf(TEXT("FuncCallerThreadWorkder Thread:"));
