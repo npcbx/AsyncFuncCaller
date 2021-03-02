@@ -13,59 +13,6 @@
 #include "Windows/HideWindowsPlatformTypes.h"
 
 
-void URunnableThreadCaller::PauseThread() 
-{
-	
-	FRunnableThreadWorker * threadWorker = (FRunnableThreadWorker*)ThreadRunner;
-	if (threadWorker)
-	{
-		threadWorker->PauseWork();
-	}
-
-}
-
-void URunnableThreadCaller::ResumeThread() 
-{
-	FRunnableThreadWorker * threadWorker = (FRunnableThreadWorker*)ThreadRunner;
-	if (threadWorker)
-	{
-		threadWorker->ResumeWork();
-	}
-
-}
-
-void URunnableThreadCaller::EndThread() 
-{
-
-	FRunnableThreadWorker * threadWorker = (FRunnableThreadWorker*)ThreadRunner;
-	if (threadWorker)
-	{
-		threadWorker->EndWork();
-	}
-}
-
-
-void URunnableThreadCaller::ExecuteGameThreadEvent()
-{
-	FRunnableThreadWorker * threadWorker = (FRunnableThreadWorker*)ThreadRunner;
-	if (threadWorker)
-	{
-		threadWorker->RunEventOnGameThread();
-	}
-
-}
-
-
-void URunnableThreadCaller::ExecuteCriticalEvent()
-{
-	FRunnableThreadWorker * threadWorker = (FRunnableThreadWorker*)ThreadRunner;
-	if (threadWorker)
-	{
-		threadWorker->RunCiticalEvent();
-	}
-
-}
-
 UAsyncFuncWorker* UAsyncBpLibrary::StartAsyncFuncWithOption(const FAsyncFuncOption& _option)
 {
 	UAsyncFuncWorker * asyncBpWorker = NewObject<UAsyncFuncWorker>();
@@ -76,19 +23,19 @@ UAsyncFuncWorker* UAsyncBpLibrary::StartAsyncFuncWithOption(const FAsyncFuncOpti
 	return asyncBpWorker;
 }
 
-URunnableThreadCaller* UAsyncBpLibrary::StartRunnableThreadWithOption(const FRunnableThreadOption& _option)
-{
-
-	//URunnableThreadCaller * loader = NewObject<URunnableThreadCaller>();
-
-	FString ThreadName = FString::Printf(TEXT("AsyncRunnableThread:"));
-	ThreadName.AppendInt(FAsyncThreadIndex::GetNext());
-
-	URunnableThreadCaller * caller = NewObject<URunnableThreadCaller>();
-	caller->ThreadRunner = new FRunnableThreadWorker(_option);
-	caller->RunningThread = FRunnableThread::Create(caller->ThreadRunner, *ThreadName);
-	return caller;
-}
+//URunnableThreadCaller* UAsyncBpLibrary::StartRunnableThreadWithOption(const FRunnableThreadOption& _option)
+//{
+//
+//	//URunnableThreadCaller * loader = NewObject<URunnableThreadCaller>();
+//
+//	FString ThreadName = FString::Printf(TEXT("AsyncRunnableThread:"));
+//	ThreadName.AppendInt(FAsyncThreadIndex::GetNext());
+//
+//	URunnableThreadCaller * caller = NewObject<URunnableThreadCaller>();
+//	caller->ThreadRunner = new FRunnableThreadWorker(_option);
+//	caller->RunningThread = FRunnableThread::Create(caller->ThreadRunner, *ThreadName);
+//	return caller;
+//}
 
 int32 UAsyncBpLibrary::GetNowThreadId()
 {
@@ -103,4 +50,22 @@ int32 UAsyncBpLibrary::GetHardWareConcurrencyNum()
 void UAsyncBpLibrary::MakeCurrentThreadSleep(float seconds)
 {
 	FPlatformProcess::Sleep(seconds);
+}
+
+void UAsyncBpLibrary::HoldUObject(UObject* obj)
+{
+	if (obj && obj->IsValidLowLevel())
+	{
+		obj->AddToRoot();
+	}
+
+}
+
+void UAsyncBpLibrary::ReleaseUObject(UObject* obj)
+{
+	if (obj && obj->IsValidLowLevel())
+	{
+		obj->RemoveFromRoot();
+	}
+
 }

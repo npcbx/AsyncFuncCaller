@@ -15,6 +15,23 @@
 DECLARE_DYNAMIC_DELEGATE_OneParam(FAsyncFuncCallback, const TArray<UObject*>&, objs);
 //DECLARE_DYNAMIC_DELEGATE(FAsyncFuncCallback);
 
+//USTRUCT(BlueprintType)
+//struct FRunnabelCommonDataType
+//{
+//	GENERATED_BODY()
+//public:
+//	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncWithOption")
+//		TArray<int32> ints = {};
+//	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncWithOption")
+//		TArray<int32> floats = {};
+//	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncWithOption")
+//		TArray<FString> strings = {};
+//};
+
+DECLARE_DYNAMIC_DELEGATE_ThreeParams(FGameThreadEvtCallback, const TArray<int32>&, intArray, const TArray<float>&, floatArray, const TArray<FString>&, StringArray);
+//DECLARE_DYNAMIC_DELEGATE(FGameThreadEvtCallback);
+
+
 
 USTRUCT(BlueprintType)
 struct FAsyncFuncOption
@@ -31,58 +48,6 @@ public:
 		FAsyncFuncCallback FinishEvent;
 };
 
-
-USTRUCT(BlueprintType)
-struct FRunnableThreadOption
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncCallerWithOption")
-		TArray<UObject*> objs = {};
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncCallerWithOption")
-		FAsyncFuncCallback CriticalEvent;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncCallerWithOption")
-		FAsyncFuncCallback AsyncEvent;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncCallerWithOption")
-		FAsyncFuncCallback GameThreadEvent;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AsyncFuncCallerWithOption")
-		FAsyncFuncCallback FinishEvent;
-};
-
-
-UCLASS(Blueprintable)
-class URunnableThreadCaller : public UObject
-{
-	GENERATED_BODY()
-public:
-	URunnableThreadCaller() {}
-	~URunnableThreadCaller() {
-		
-		if (RunningThread)
-		{
-			RunningThread->WaitForCompletion();
-		}
-		if (ThreadRunner)
-		{
-			delete ThreadRunner;
-			ThreadRunner = nullptr;
-		}
-	}
-
-	FRunnableThread * RunningThread;
-	FRunnable * ThreadRunner;
-
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncCallerWithOption")
-	void PauseThread();
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncCallerWithOption")
-	void ResumeThread();
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncCallerWithOption")
-	void EndThread();
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
-		void ExecuteGameThreadEvent();
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
-		void ExecuteCriticalEvent(); 
-};
 
 
 UCLASS(Blueprintable)
@@ -106,7 +71,7 @@ public:
 		//}
 
 
-		if (!WorkingThread)
+		if (WorkingThread)
 		{
 			delete WorkingThread;
 			WorkingThread = nullptr;
@@ -157,8 +122,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
 	static UAsyncFuncWorker* StartAsyncFuncWithOption(const FAsyncFuncOption& _option);
 
-	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
-	static URunnableThreadCaller* StartRunnableThreadWithOption(const FRunnableThreadOption& _option);
+	//UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
+	//static URunnableThreadCaller* StartRunnableThreadWithOption(const FRunnableThreadOption& _option);
 
 	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
 	static int32 GetNowThreadId();
@@ -168,4 +133,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AsyncFuncWithOption")
 		static void MakeCurrentThreadSleep(float seconds);
+
+	UFUNCTION(BlueprintCallable, Category = "MeshExporter")
+		static void HoldUObject(UObject* obj);
+	UFUNCTION(BlueprintCallable, Category = "MeshExporter")
+		static void ReleaseUObject(UObject* obj);
 };

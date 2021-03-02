@@ -4,8 +4,9 @@
 
 #include "RunnableThreadWorker.h"
 #include "Async/Async.h"
-#include <mutex>
-std::timed_mutex data_tmutex;
+#include "AsyncLoopEventManager.h"
+//#include <mutex>
+//std::timed_mutex data_tmutex;
 //Init
 bool FRunnableThreadWorker::Init()
 {
@@ -46,6 +47,11 @@ void FRunnableThreadWorker::Exit()
 
 void FRunnableThreadWorker::RunCiticalEvent()
 {
-	std::lock_guard<std::timed_mutex> lockg(data_tmutex);
-	AsyncFuncCallerOption.CriticalEvent.ExecuteIfBound(AsyncFuncCallerOption.objs);
+	//UAsyncLoopEventManager * _manager = (UAsyncLoopEventManager*)(Manager);
+	if (Manager)
+	{
+		std::lock_guard<std::timed_mutex> lockg(Manager->data_mutex);
+		AsyncFuncCallerOption.CriticalEvent.ExecuteIfBound(AsyncFuncCallerOption.objs);
+	}
+	
 }
