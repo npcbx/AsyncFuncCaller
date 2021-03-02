@@ -21,7 +21,6 @@ uint32 FFuncCallerThreadWorker::Run() {
 		CallResult = false;
 	}
 
-	
 	return 0;
 }
 

@@ -7,15 +7,17 @@
 #include "CoreMinimal.h"
 #include "AsyncBpLibrary.h"
 #include <atomic>
+#include "AsyncLoopEventManager.h"
 
 DECLARE_DELEGATE_TwoParams(AsyncFuncCallFinishDelegate, UObject*, bool);
+
 
 class FRunnableThreadWorker : public FRunnable
 {
 public:
 	//construct func
-	FRunnableThreadWorker(const FRunnableThreadOption& _AsyncFuncCallerOption):
-		AsyncFuncCallerOption(_AsyncFuncCallerOption)
+	FRunnableThreadWorker(const FRunnableThreadOption& _AsyncFuncCallerOption, UAsyncLoopEventManager* _manager):
+		AsyncFuncCallerOption(_AsyncFuncCallerOption), Manager(_manager)
 	{
 		IfPauseWork.store(false);
 		IfEndWork.store(false);
@@ -29,24 +31,33 @@ public:
 	std::atomic<bool> IfPauseWork;
 	std::atomic<bool> IfEndWork;
 	void PauseWork() {
-		IfPauseWork.store(true);
+		if (!IfPauseWork.load()) {
+			IfPauseWork.store(true);
+		}
 	}
 	void ResumeWork()
 	{
-		IfPauseWork.store(false);
+		if (IfPauseWork.load()) {
+			IfPauseWork.store(false);
+		}
 	}
 	void EndWork()
 	{
-		IfEndWork.store(true);
+		if (!IfEndWork.load()) {
+			IfEndWork.store(true);
+		}
 	}
-	void RunEventOnGameThread()
+	//void RunEventOnGameThread(const FRunnabelCommonDataType& data)
+	void RunEventOnGameThread(const TArray<int32>& intArray, const TArray<float>& floatArray, const TArray<FString>& StringArray)
 	{
 		AsyncTask(ENamedThreads::GameThread, [=] {
-			AsyncFuncCallerOption.GameThreadEvent.ExecuteIfBound(AsyncFuncCallerOption.objs);
+			//AsyncFuncCallerOption.GameThreadEvent.ExecuteIfBound(data);
+			AsyncFuncCallerOption.GameThreadEvent.ExecuteIfBound(intArray, floatArray, StringArray);
 		});
 	}
 	void RunCiticalEvent();
 private:
 	FRunnableThreadOption AsyncFuncCallerOption;
+	UAsyncLoopEventManager* Manager;
 };
 
