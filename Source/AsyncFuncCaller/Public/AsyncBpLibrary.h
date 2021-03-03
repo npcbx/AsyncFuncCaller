@@ -99,8 +99,11 @@ public:
 			if (worker && worker->IsValidLowLevel())
 			{
 				AsyncTask(ENamedThreads::GameThread, [=] {
-					option.FinishEvent.ExecuteIfBound(option.objs);
-					worker->RemoveFromRoot();
+					if (worker && worker->IsValidLowLevel())
+					{
+						option.FinishEvent.ExecuteIfBound(option.objs);
+						worker->RemoveFromRoot();
+					}
 					//promise2->SetValue();
 				});
 			}
